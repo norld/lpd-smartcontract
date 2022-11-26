@@ -1,0 +1,53 @@
+{
+  "name": "simple-launchpad-sc",
+  "version": "1.0.0",
+  "description": "no desc",
+  "main": "index.js",
+  "author": "Grymore",
+  "license": "",
+  "private": true,
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "console": "npx hardhat console",
+    "node": "npx hardhat node",
+    "deploy:local": "npx hardhat run --network localhost scripts/deploy.js",
+    "deploy:mainnet": "npx hardhat run --network mainnet scripts/deploy.js",
+    "deploy:testnet": "npx hardhat run --network testnet scripts/deploy.js",
+    "deploy:erc20:testnet": "npx hardhat run --network mumbai scripts/deployErc20.js",
+    "verify:mainnet": "npx hardhat run --network mainnet scripts/verify.js",
+    "verify:testnet": "npx hardhat run --network testnet scripts/verify.js",
+    "local": "npx dotenv -- bash -c 'ganache-cli --account=\"0x$PRIVKEY_DEPLOYER,1000000000000000000000\" --account=\"0x$PRIVKEY_USER_A,1000000000000000000000\" --account=\"0x$PRIVKEY_USER_B,1000000000000000000000\" -q'"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.4",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.6",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@nomiclabs/hardhat-ethers": "^2.1.1",
+    "@nomiclabs/hardhat-etherscan": "^3.1.0",
+    "@nomiclabs/hardhat-solhint": "^2.0.1",
+    "@nomiclabs/hardhat-truffle5": "^2.0.7",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "@openzeppelin/test-helpers": "^0.5.16",
+    "@typechain/ethers-v5": "^10.1.1",
+    "@typechain/hardhat": "^6.1.4",
+    "@types/mocha": "^9.1.1",
+    "chai": "^4.3.6",
+    "dotenv": "^16.0.3",
+    "dotenv-cli": "^6.0.0",
+    "ethers": "^5.4.7",
+    "hardhat": "^2.11.2",
+    "hardhat-gas-reporter": "^1.0.8",
+    "signale": "^1.4.0",
+    "solidity-coverage": "^0.8.0",
+    "ts-node": "^10.9.1",
+    "typechain": "^8.1.1",
+    "typescript": "^4.9.3",
+    "web3": "^1.8.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
+    "fraction.js": "^4.2.0",
+    "moment": "^2.29.4"
+  }
+}

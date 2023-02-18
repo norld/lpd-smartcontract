@@ -23,6 +23,10 @@ contract LaunchpadFactory is Ownable {
 
     Counters.Counter private totalPair;
 
+    constructor(address base) {
+        implemented = base;
+    }
+
     modifier onlyManager() {
         require(
             isManager(_msgSender()) == true,

@@ -10,7 +10,9 @@ interface ILaunchpadInitializable {
         uint256 _totalSupply,
         address _IDOTokenAddress,
         address _txnTokenAddress,
-        uint256 _txnRatio
+        uint256 _txnRatio,
+        uint256 _minAmount,
+        uint256 _maxAmount
     ) external;
 
     function getEndTime() external view returns (uint256);

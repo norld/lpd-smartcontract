@@ -35,11 +35,10 @@ contract LaunchpadFactory is Ownable {
         _;
     }
 
-    function setManager(address target, bool status)
-        external
-        virtual
-        onlyOwner
-    {
+    function setManager(
+        address target,
+        bool status
+    ) external virtual onlyOwner {
         manager[target] = status;
 
         emit managerStatus(target, status);
@@ -51,7 +50,9 @@ contract LaunchpadFactory is Ownable {
         uint256 _totalSupply,
         IERC20Metadata _IDOTokenAddress,
         IERC20Metadata _txnTokenAddress,
-        uint256 _txnRatio
+        uint256 _txnRatio,
+        uint256 _minAmount,
+        uint256 _maxAmount
     ) external onlyManager {
         require(_IDOTokenAddress.decimals() > 0);
         require(_txnTokenAddress.decimals() > 0);
@@ -67,7 +68,9 @@ contract LaunchpadFactory is Ownable {
             _totalSupply,
             address(_IDOTokenAddress),
             address(_txnTokenAddress),
-            _txnRatio
+            _txnRatio,
+            _minAmount,
+            _maxAmount
         );
 
         {
@@ -83,19 +86,16 @@ contract LaunchpadFactory is Ownable {
         return totalPair.current();
     }
 
-    function getLaunchpadAddressByIndex(uint256 index)
-        public
-        view
-        returns (address)
-    {
+    function getLaunchpadAddressByIndex(
+        uint256 index
+    ) public view returns (address) {
         return pairList[index];
     }
 
-    function getLaunchpadAddressByRangeIndex(uint256 fromIndex, uint256 toIndex)
-        public
-        view
-        returns (address[] memory)
-    {
+    function getLaunchpadAddressByRangeIndex(
+        uint256 fromIndex,
+        uint256 toIndex
+    ) public view returns (address[] memory) {
         unchecked {
             uint256 getRange = (toIndex - fromIndex) + 1;
             address[] memory list = new address[](getRange);

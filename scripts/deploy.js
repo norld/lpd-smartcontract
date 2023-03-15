@@ -20,25 +20,24 @@ async function main() {
   await factory.deployed();
   console.log("LaunchpadFactory deployed to:", factory.address);
 
-  // if (hre.network.config.chainId !== undefined) {
-  //   console.log("Waiting block confirm...");
-  //   setTimeout(async () => {
-  //      console.log("Verifying Factory Contract");
-  //      await hre.run("verify:verify", {
-  //        address: factory.address,
-  //        constructorArguments: [],
-  //      });
+  if (hre.network.config.chainId !== undefined) {
+    console.log("Waiting block confirm...");
+    setTimeout(async () => {
+      // console.log("Verifying Implementation Contract");
+      // await hre.run("verify:verify", {
+      //   address: pair.address,
+      //   constructorArguments: [],
+      // });
 
-  //     console.log("Verifying Implementation Contract");
-  //     await hre.run("verify:verify", {
-  //       address: pair.address,
-  //       constructorArguments: [],
-  //     });
-
-  //   }, 50000);
-  // } else {
-  //   console.log("Skip because local deploy");
-  // }
+      console.log("Verifying Factory Contract");
+      await hre.run("verify:verify", {
+        address: factory.address,
+        constructorArguments: [pair.address],
+      });
+    }, 50000);
+  } else {
+    console.log("Skip because local deploy");
+  }
 }
 
 // We recommend this pattern to be able to use async/await everywhere

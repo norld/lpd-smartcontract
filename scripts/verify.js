@@ -2,13 +2,13 @@ const hre = require("hardhat");
 
 const main = async () => {
   await hre.run("verify:verify", {
-    address: "0xAb2826EeaE98a37e7F03c75f3a62135a87db4aB3",
-    constructorArguments: ["0xdEd1E1c245035d4777d6625ddb391a030a9af504"],
+    address: "0x0e934C782D450655f28d314026Be81297A39658E",
+    constructorArguments: ["Binance USD", "BUSD", 18, ethers.utils.parseEther("10000000000000000"), "1"],
   });
-  // await hre.run("verify:verify", {
-  //   address: "0x6eCB3F60bC704d86512e5C2a031Ec322B64CE9F1",
-  //   constructorArguments: [],
-  // });
+  await hre.run("verify:verify", {
+    address: "0xC6A2c41DBB2245D6E6c8C23951A2683Ba9bF31F0",
+    constructorArguments: [],
+  });
 };
 
 main().catch(console.error);

@@ -17,9 +17,9 @@ const config = {
       url: "http://localhost:8545",
     },
     testnet: {
-      url: "https://endpoints.omniatech.io/v1/bsc/testnet/b04acd98f5ee4f8d9a19fe2bdf262639",
+      url: "https://bsc-testnet.public.blastapi.io",
       accounts: [
-        `e35576866085d08f284772511aaba21f84fc92a831ae13cc0f3b97644df3e583`,
+        `8a8891ceaa14be0921b4dca62e270c1cf8a1e9f82081dde0477bbdf3405bc16c`,
         `01526ca693def77ba68e5ca55bfc77634b121850bafc510f9b3aff3f828e61d7`,
         `321fd422e8f13e2f73dc428348ec01a8cc1c267ae76214405f4650ebe5b27d3f`,
       ],
@@ -28,7 +28,7 @@ const config = {
     mumbai: {
       url: "https://polygon-testnet.public.blastapi.io",
       accounts: [
-        `e35576866085d08f284772511aaba21f84fc92a831ae13cc0f3b97644df3e583`,
+        `8a8891ceaa14be0921b4dca62e270c1cf8a1e9f82081dde0477bbdf3405bc16c`,
         `01526ca693def77ba68e5ca55bfc77634b121850bafc510f9b3aff3f828e61d7`,
         `321fd422e8f13e2f73dc428348ec01a8cc1c267ae76214405f4650ebe5b27d3f`,
       ],
@@ -37,7 +37,7 @@ const config = {
     bsc: {
       url: "https://bsctestapi.terminet.io/rpc",
       accounts: [
-        `e35576866085d08f284772511aaba21f84fc92a831ae13cc0f3b97644df3e583`,
+        `8a8891ceaa14be0921b4dca62e270c1cf8a1e9f82081dde0477bbdf3405bc16c`,
         `01526ca693def77ba68e5ca55bfc77634b121850bafc510f9b3aff3f828e61d7`,
         `321fd422e8f13e2f73dc428348ec01a8cc1c267ae76214405f4650ebe5b27d3f`,
       ],
@@ -46,7 +46,7 @@ const config = {
     mainnet: {
       url: `https://poly-rpc.gateway.pokt.network`,
       accounts: [
-        `e35576866085d08f284772511aaba21f84fc92a831ae13cc0f3b97644df3e583`,
+        `8a8891ceaa14be0921b4dca62e270c1cf8a1e9f82081dde0477bbdf3405bc16c`,
         `01526ca693def77ba68e5ca55bfc77634b121850bafc510f9b3aff3f828e61d7`,
         `321fd422e8f13e2f73dc428348ec01a8cc1c267ae76214405f4650ebe5b27d3f`,
       ],
@@ -61,3 +61,6 @@ const config = {
 };
 
 module.exports = config;
+
+1678868176;
+1000;

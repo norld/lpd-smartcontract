@@ -61,10 +61,11 @@ contract LaunchpadInitializable is
         }
     }
 
-    modifier onlyController() {
+    modifier onlyManager() {
         require(
-            _msgSender() == owner(),
-            "Ownable: caller is not the controller"
+            ILaunchpadFactory(LAUNCHPAD_FACTORY).isManager(_msgSender()) ==
+                true,
+            "Initializable : only manager allowed!"
         );
         _;
     }
@@ -75,8 +76,11 @@ contract LaunchpadInitializable is
         uint256 _totalSupply,
         address _IDOTokenAddress,
         address _txnTokenAddress,
-        uint256 _txnRatio
+        uint256 _txnRatio,
+        uint256 _minAmount,
+        uint256 _maxAmount
     ) external initializer {
+        require(_msgSender().isContract(), "Invalid caller");
         LAUNCHPAD_FACTORY = _msgSender();
         startTime = _startTime;
         endTime = _startTime + _duration;
@@ -85,8 +89,8 @@ contract LaunchpadInitializable is
         IDOTokenAddress = _IDOTokenAddress;
         txnTokenAddress = _txnTokenAddress;
         txnRatio = _txnRatio;
-
-        buyLimit.maxTimes = 1;
+        buyLimit.minAmount = _minAmount;
+        buyLimit.maxAmount = _maxAmount;
     }
 
     function getPoolInfo() public view returns (PoolInfo memory) {
@@ -118,11 +122,9 @@ contract LaunchpadInitializable is
         return softCap;
     }
 
-    function getBuyRecord(address account)
-        public
-        view
-        returns (BuyRecord memory)
-    {
+    function getBuyRecord(
+        address account
+    ) public view returns (BuyRecord memory) {
         return mBuyRecords[account];
     }
 
@@ -130,11 +132,9 @@ contract LaunchpadInitializable is
         return aryAccounts.length;
     }
 
-    function getBuyRecordByIndex(uint256 index)
-        public
-        view
-        returns (BuyRecord memory)
-    {
+    function getBuyRecordByIndex(
+        uint256 index
+    ) public view returns (BuyRecord memory) {
         return mBuyRecords[aryAccounts[index]];
     }
 
@@ -170,12 +170,6 @@ contract LaunchpadInitializable is
                     "buy amount too large"
                 );
             }
-            if (buyLimit.maxTimes > 0) {
-                require(
-                    mBuyRecords[msg.sender].buyTimes < buyLimit.maxTimes,
-                    "buy times is not enough"
-                );
-            }
         }
 
         uint256 rewards;
@@ -183,7 +177,7 @@ contract LaunchpadInitializable is
         require(totalSupply >= rewards, "total supply is not enough");
         if (txnTokenAddress != address(0)) {
             txnDecimals = IERC20Metadata(txnTokenAddress).decimals();
-            rewards = txnAmount.mul(txnRatio).div(10**txnDecimals);
+            rewards = txnAmount.mul(txnRatio).div(10 ** txnDecimals);
             require(
                 IERC20Metadata(txnTokenAddress).transferFrom(
                     msg.sender,
@@ -192,7 +186,7 @@ contract LaunchpadInitializable is
                 )
             );
         } else {
-            rewards = txnAmount.mul(txnRatio).div(10**18);
+            rewards = txnAmount.mul(txnRatio).div(10 ** 18);
         }
         require(rewards > 0, "txn amount is too small");
 
@@ -263,7 +257,7 @@ contract LaunchpadInitializable is
         mBuyRecords[msg.sender].paidRewards += trueRewards;
     }
 
-    function clearAll() public onlyController {
+    function clearAll() public onlyManager {
         require(block.timestamp > endTime, "this pool is not end");
         require(arySharingRules.length > 0, "sharing rules must be configured");
         uint256 surplusRewards = IERC20Metadata(IDOTokenAddress).balanceOf(
@@ -331,7 +325,7 @@ contract LaunchpadInitializable is
         }
     }
 
-    function clear() public onlyController {
+    function clear() public onlyManager {
         require(block.timestamp > endTime, "this pool is not end");
         require(arySharingRules.length > 0, "sharing rules must be configured");
         uint256 totalTxnAmount;
@@ -373,15 +367,15 @@ contract LaunchpadInitializable is
         address tokenAddress,
         address account,
         uint256 amount
-    ) public onlyOwner {
+    ) public onlyManager {
         IERC20Metadata(tokenAddress).transfer(account, amount);
     }
 
-    function withdrawBNB(address account, uint256 amount) public onlyOwner {
+    function withdrawBNB(address account, uint256 amount) public onlyManager {
         payable(account).transfer(amount);
     }
 
-    function giveBack(uint256 offset) public onlyController {
+    function giveBack(uint256 offset) public onlyManager {
         require(block.timestamp > endTime, "this pool is not end");
         require(position < aryAccounts.length, "all have been give back");
 
@@ -416,7 +410,7 @@ contract LaunchpadInitializable is
         position = endPosition;
     }
 
-    function setClaimOpen(bool _claimOpen) public onlyController {
+    function setClaimOpen(bool _claimOpen) public onlyManager {
         claimOpen = _claimOpen;
     }
 
@@ -433,11 +427,9 @@ contract LaunchpadInitializable is
     }
 
     function setTxnLimit(
-        uint256 _maxTimes,
         uint256 _minAmount,
         uint256 _maxAmount
-    ) public onlyController {
-        buyLimit.maxTimes = _maxTimes;
+    ) public onlyManager {
         buyLimit.minAmount = _minAmount;
         buyLimit.maxAmount = _maxAmount;
     }
@@ -446,17 +438,14 @@ contract LaunchpadInitializable is
         return buyLimit;
     }
 
-    function setSeniorWhiteList(address _seniorWhiteList)
-        public
-        onlyController
-    {
+    function setSeniorWhiteList(address _seniorWhiteList) public onlyManager {
         seniorWhiteList = _seniorWhiteList;
     }
 
-    function setWhiteListInfo(address _contractAddress, uint256 _expireTime)
-        public
-        onlyController
-    {
+    function setWhiteListInfo(
+        address _contractAddress,
+        uint256 _expireTime
+    ) public onlyManager {
         whiteListContract = _contractAddress;
         whiteListExpireTime = _expireTime;
     }
@@ -473,7 +462,7 @@ contract LaunchpadInitializable is
     function setReleaseRules(
         uint256[] calldata aryTime,
         uint256[] calldata aryRatio
-    ) public onlyController {
+    ) public onlyManager {
         require(aryTime.length == aryRatio.length, "length must be equal");
         uint256 aryLength = aryTime.length;
         uint256 totalReleaseRatio = 0;
@@ -499,7 +488,7 @@ contract LaunchpadInitializable is
         uint256[] calldata aryType,
         address[] calldata aryClearAddress,
         uint256[] calldata aryRatio
-    ) public onlyController {
+    ) public onlyManager {
         require(
             aryClearAddress.length == aryType.length,
             "length must be equal"
@@ -529,11 +518,11 @@ contract LaunchpadInitializable is
         return arySharingRules;
     }
 
-    function resetEndTime(uint256 _endTime) public onlyController {
+    function resetEndTime(uint256 _endTime) public onlyManager {
         endTime = _endTime;
     }
 
-    function resetSoftCap(uint256 _softCap) public onlyController {
+    function resetSoftCap(uint256 _softCap) public onlyManager {
         softCap = _softCap;
     }
 
@@ -556,7 +545,6 @@ contract LaunchpadInitializable is
     }
 
     struct TxnLimit {
-        uint256 maxTimes;
         uint256 minAmount;
         uint256 maxAmount;
     }
